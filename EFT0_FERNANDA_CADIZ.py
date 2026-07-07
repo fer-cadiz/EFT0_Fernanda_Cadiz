@@ -63,17 +63,75 @@ def stock_categoria(categoria,productos, inventario):
         print(f"Stock total: {total_stock}")
 
 def ejecutar_stock_categoria(productos, inventario):
+    if len(productos) == 0:
+        print("No hay productos para mostrar.")
+    else:
+        while True:
+                categoria = input("Ingrese categoria:\n>").strip()
+                if not validar_categoria(categoria):
+                    print("Categoria no puede estart vacia.")
+                else:
+                    break
+                stock_categoria(categoria, productos, inventario)
+
+def buscar_precio(precio_min, precio_max, productos, inventario):
+    resultados = []
+    for codigo in productos:
+        nombre = productos[codigo][0]
+        precio = productos[codigo][2]
+        stock = inventario[codigo][0]
+        if precio_min <= precio <= precio_max and stock > 0:
+            resultados.append(nombre + "--" + codigo)
+    
+    resultados.sort()
+    return resultados
+
+def ejecutar_buscar_precio(productos, inventario):
     while True:
-        categoria = input("Ingrese categoria:\n>").strip()
-        if validar_categoria(categoria) == False:
-            print("Categoria no puede estart vacia.")
-        else:
-            break
-    stock_categoria(categoria, productos, inventario)
+        try:
+            precio_min = float(input("Ingrese precio minimo:\n"))
+            if not validar_precio(precio_min):
+                precio_min("Precio invalido.")
+            else:
+                break
+        except ValueError:
+            print("Error, precio debe ser un valor numerico.")
+    while True:
+        try:
+            precio_max = float(input("Ingrese precio maximo:\n"))
+            if not validar_precio(precio_max):
+                print("Error, precio invalido")
+            else:
+                break
+        except ValueError:
+            print("Error, precio debe tener un valor numerico.")
+    
+    
+    resultados = buscar_precio(precio_min, precio_max, productos, inventario)
+    if len(resultados) > 0:
+        print(f"Los productos encontrados son:\n{resultados}")
+    else:
+        print("No hay productos en ese rango de precio.")
+
 
 def main():
-    productos = {}
-    inventario = {}
+    os.system("cls")
+    #en el programa final este diccionario debe estar vacio
+    #uso solo para pruebas
+    productos = {
+    "P101":["Cuaderno","Papelería",2490,True],
+    "P102":["Lápiz","Papelería",590,True],
+    "P103":["Botella","Accesorios",6990,False],
+    "P104":["Mochila","Accesorios",24990,True]
+    }
+    #en el programa final este diccionario debe estar vacio
+    #uso solo para pruebas
+    inventario = { "P101":[30,15],
+    "P102":[120,50],
+    "P103":[0,10],
+    "P104":[8,25]
+    }
+
 
     while True:
         mostrar_menu()
@@ -81,7 +139,7 @@ def main():
         if opcion == 1:
             ejecutar_stock_categoria(productos, inventario)
         elif opcion == 2:
-            pass
+            ejecutar_buscar_precio(productos, inventario)
         elif opcion == 3:
             pass
         elif opcion == 4:
